@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuda y Soporte | ENTALPIA</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="../index.html" class="logo">
+            <span>ENTALPIA</span>
+        </a>
+
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="ayudaysoporte.html" class="active">Ayuda y Soporte</a>
+            <a href="antecedentes.html">Antecedentes</a>
+            <a href="juego.html">Jugar!</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+
+        <div class="nav-actions">
+            <button type="button" class="btn-login">Iniciar sesión</button>
+            <a href="#demo" class="btn-nav" data-abrir-mapa>Desplegar Demo</a>
+        </div>
+
+    </div>
+
+</header>
+
+<!-- =========================
+     ENCABEZADO
+========================= -->
+<section class="page-hero">
+
+    <div class="container page-hero-grid">
+
+        <div>
+            <h1>Centro de ayuda de Entalpia</h1>
+            <p>
+                Encuentra respuestas sobre cómo usar la plataforma, leer los datos satelitales,
+                entender las alertas y jugar. Usa el buscador o filtra por tema.
+            </p>
+            <a href="#buscador-ayuda" class="btn-primary">Buscar ayuda</a>
+        </div>
+
+        <aside class="info-box">
+            <h3>¿Ves un incendio ahora mismo?</h3>
+            <p>
+                Llama al <strong>911</strong>. Entalpia es una herramienta de prevención y
+                no sustituye a los servicios de emergencia.
+                <a href="#faq-emergencia">Qué hacer en una emergencia</a>
+            </p>
+        </aside>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     CONTENIDO
+========================= -->
+<div class="container help-layout">
+
+    <!-- Filtros -->
+    <aside class="filter-panel">
+
+        <div class="filter-panel-title">FILTRAR POR</div>
+
+        <details open>
+            <summary>Temas</summary>
+
+            <label class="filter-option">
+                <input type="checkbox" value="primeros-pasos"> Primeros pasos
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" value="datos"> Mapa y datos
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" value="alertas"> Alertas
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" value="juego"> Juego
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" value="cuenta"> Cuenta
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" value="soporte"> Soporte técnico
+            </label>
+
+            <button type="button" class="filter-clear" hidden>Quitar filtros</button>
+        </details>
+
+    </aside>
+
+    <!-- Resultados -->
+    <main>
+
+        <form class="search-bar" id="form-buscador" role="search">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input type="search" id="buscador-ayuda" placeholder="Buscar (por ejemplo: alertas, gráfica, juego)"
+                   aria-label="Buscar en el centro de ayuda" autocomplete="off">
+            <button type="submit" aria-label="Buscar">➤</button>
+        </form>
+
+        <div id="titulo-temas">
+            <h2 class="help-section-title">Temas de ayuda</h2>
+            <p class="help-section-text">
+                Elige un tema para ver la respuesta completa en las preguntas frecuentes.
+            </p>
+        </div>
+
+        <div class="help-cards">
+
+            <a href="#faq-que-es" class="help-card" data-categoria="primeros-pasos">
+                <span class="card-category">Primeros pasos</span>
+                <h3>¿Qué es Entalpia?</h3>
+                <p>Conoce qué hace la plataforma y cómo puede ayudarte a prevenir incendios.</p>
+            </a>
+
+            <a href="#faq-emergencia" class="help-card" data-categoria="primeros-pasos">
+                <span class="card-category">Primeros pasos</span>
+                <h3>Qué hacer si ves un incendio</h3>
+                <p>A quién llamar y qué información tener a la mano en una emergencia.</p>
+            </a>
+
+            <a href="#faq-grafica" class="help-card" data-categoria="datos">
+                <span class="card-category">Mapa y datos</span>
+                <h3>Cómo leer la gráfica de datos</h3>
+                <p>Entiende qué significa cada barra y cómo interpretar los focos de calor.</p>
+            </a>
+
+            <a href="#faq-datos" class="help-card" data-categoria="datos">
+                <span class="card-category">Mapa y datos</span>
+                <h3>¿De dónde vienen los datos?</h3>
+                <p>Cómo se obtiene y procesa la información satelital que mostramos.</p>
+            </a>
+
+            <a href="#faq-alertas" class="help-card" data-categoria="alertas">
+                <span class="card-category">Alertas</span>
+                <h3>Cómo funcionan las alertas</h3>
+                <p>Qué activa una alerta y qué significa cuando aparece una.</p>
+            </a>
+
+            <a href="#faq-juego" class="help-card" data-categoria="juego">
+                <span class="card-category">Juego</span>
+                <h3>Cómo jugar</h3>
+                <p>Aprende sobre la prevención de incendios mientras juegas.</p>
+            </a>
+
+            <a href="#faq-sesion" class="help-card" data-categoria="cuenta">
+                <span class="card-category">Cuenta</span>
+                <h3>Iniciar sesión</h3>
+                <p>Información sobre las cuentas de usuario de Entalpia.</p>
+            </a>
+
+            <a href="#faq-problema" class="help-card" data-categoria="soporte">
+                <span class="card-category">Soporte técnico</span>
+                <h3>Reportar un problema</h3>
+                <p>¿Algo no carga o no funciona como esperabas? Cuéntanos.</p>
+            </a>
+
+        </div>
+
+        <div class="no-results" hidden>
+            No encontramos resultados para tu búsqueda. Prueba con otras palabras o
+            <a href="contacto.html" style="color:var(--green-primary);">contacta al equipo</a>.
+        </div>
+
+        <!-- Preguntas frecuentes -->
+        <div id="titulo-faq">
+            <h2 class="help-section-title">Preguntas frecuentes</h2>
+            <p class="help-section-text">Respuestas rápidas a las dudas más comunes.</p>
+        </div>
+
+        <div class="faq-list">
+
+            <details class="faq-item" id="faq-que-es" data-categoria="primeros-pasos">
+                <summary>¿Qué es Entalpia?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Entalpia es una página web enfocada en la prevención y alerta de incendios,
+                        sostenida por información satelital. Reunimos datos de focos de calor y los
+                        presentamos de forma sencilla para que cualquier persona pueda entender el riesgo
+                        de incendio en su zona.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-emergencia" data-categoria="primeros-pasos">
+                <summary>¿Qué hago si veo un incendio?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Llama de inmediato al <strong>911</strong>. Si se trata de un incendio forestal,
+                        también puedes reportarlo a la CONAFOR al <strong>800 INCENDIO (800 462 3634)</strong>.
+                    </p>
+                    <p>
+                        Ten a la mano la ubicación lo más precisa posible, el tamaño aproximado del fuego y
+                        si hay personas o viviendas cerca. Aléjate de la zona y no intentes apagarlo si es grande.
+                        Entalpia es una herramienta de apoyo y no sustituye a los servicios de emergencia.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-grafica" data-categoria="datos">
+                <summary>¿Cómo leo la gráfica de datos?</summary>
+                <div class="faq-answer">
+                    <p>
+                        En la página de <a href="../index.html#datos">Inicio</a> encontrarás una gráfica de barras.
+                        Cada barra representa un periodo de tiempo y su altura indica cuántos focos de calor se
+                        detectaron en ese periodo. Pasa el cursor sobre una barra para ver el número exacto.
+                    </p>
+                    <p>
+                        Un foco de calor no siempre es un incendio: puede ser, por ejemplo, una quema agrícola.
+                        Por eso los datos se usan como indicador de riesgo.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-datos" data-categoria="datos">
+                <summary>¿De dónde vienen los datos?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Usamos las detecciones de <strong>NASA FIRMS</strong> obtenidas por el sensor
+                        <strong>VIIRS</strong> del satélite NOAA-21. Cada detección es un punto donde el satélite
+                        registró una anomalía térmica (una zona más caliente de lo normal) en México y sus
+                        alrededores durante los últimos días.
+                    </p>
+                    <p>
+                        Nuestro equipo de análisis de datos limpia esa información, la guarda en una base de datos
+                        y la clasifica según la confianza de la detección (nominal o alta, o baja) antes de
+                        mostrarla en el mapa de la demostración.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-alertas" data-categoria="alertas">
+                <summary>¿Cómo funcionan las alertas?</summary>
+                <div class="faq-answer">
+                    <!-- TODO: ajustar según cómo se generen las alertas en la versión final -->
+                    <p>
+                        Cuando los datos satelitales muestran actividad de calor inusual en una zona, Entalpia la
+                        señala como zona de riesgo. El objetivo es avisar lo antes posible para que las personas
+                        y autoridades puedan reaccionar a tiempo.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-juego" data-categoria="juego">
+                <summary>¿Cómo juego?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Entra a la sección <a href="juego.html">Jugar!</a> desde el menú superior. El juego está
+                        pensado para aprender sobre la prevención de incendios de forma divertida.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-sesion" data-categoria="cuenta">
+                <summary>¿Cómo inicio sesión?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Pulsa <strong>Iniciar sesión</strong> en la parte superior de la página. Si todavía no tienes
+                        cuenta, elige <strong>Registrarse</strong> en la misma ventana. Con la sesión iniciada puedes
+                        actualizar los datos del mapa desde <strong>Desplegar Demo</strong>.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-problema" data-categoria="soporte">
+                <summary>Algo en la página no funciona, ¿qué hago?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Primero intenta recargar la página o abrirla en otro navegador. Si el problema continúa,
+                        escríbenos desde la página de <a href="contacto.html">Contacto</a> y cuéntanos qué
+                        estabas haciendo, en qué dispositivo y qué navegador usas.
+                    </p>
+                </div>
+            </details>
+
+        </div>
+
+        <!-- CTA -->
+        <div class="help-cta">
+            <div>
+                <h3>¿No encontraste lo que buscabas?</h3>
+                <p>Nuestro equipo puede ayudarte directamente.</p>
+            </div>
+            <a href="contacto.html" class="btn-primary">Contactar al equipo</a>
+        </div>
+
+    </main>
+
+</div>
+
+<!-- =========================
+     FOOTER
+========================= -->
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-brand">
+            <h3>ENTALPIA</h3>
+            <p>
+                Tecnología e inteligencia artificial para la detección temprana
+                de incendios y la protección de ecosistemas e infraestructura.
+            </p>
+        </div>
+
+        <div class="footer-links">
+            <h4>Navegación</h4>
+            <a href="../index.html">Inicio</a>
+            <a href="ayudaysoporte.html">Ayuda y Soporte</a>
+            <a href="antecedentes.html">Antecedentes</a>
+            <a href="contacto.html">Contacto</a>
+            <a href="referencias.html">Referencias</a>
+        </div>
+
+        <div class="footer-social">
+            <h4>Redes</h4>
+            <a href="https://www.instagram.com/entalpia.team_mx/" target="_blank" rel="noopener noreferrer">
+                Instagram
+            </a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 ENTALPIA. Todos los derechos reservados.
+    </div>
+
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
