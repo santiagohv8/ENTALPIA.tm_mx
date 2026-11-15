@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENTALPIA</title>
+
+    <link rel="icon" href="assets/logoEntalpia.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="index.html" class="logo">
+            <span>ENTALPIA</span>
+        </a>
+
+        <button type="button" class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+
+
+        <nav>
+            <a href="index.html" class="active">Inicio</a>
+            <a href="pages/ayudaysoporte.html">Ayuda y Soporte</a>
+            <a href="pages/antecedentes.html">Antecedentes</a>
+            <a href="pages/juego.html">Jugar!</a>
+            <a href="pages/contacto.html">Contacto</a>
+        </nav>
+
+        <div class="nav-actions">
+            <button type="button" class="btn-login">Iniciar sesión</button>
+            <a href="#demo" class="btn-nav" data-abrir-mapa>Desplegar Demo</a>
+        </div>
+
+    </div>
+
+</header>
+
+<!-- =========================
+     HERO
+========================= -->
+<section class="hero" id="inicio">
+
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content">
+
+        <span class="badge">
+            Apaga las llamas y Enciende tu interés
+        </span>
+
+        <h1>
+            Detectamos incendios antes de que se conviertan en una emergencia
+        </h1>
+
+        <p>
+            Página web enfocada en la prevención y alerta de incendios, sostenida por información satelital.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#demo" class="btn-primary" data-abrir-mapa>Desplegar Demostración</a>
+            <a href="pages/contacto.html" class="btn-secondary">Contáctanos</a>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     ¿QUÉ ES ENTALPIA?
+========================= -->
+<section class="section" id="informacion">
+
+    <div class="container about-grid">
+
+        <div class="about-text">
+            <span class="eyebrow eyebrow-left">¿Qué es Entalpia?</span>
+            <h2>Información satelital convertida en prevención</h2>
+            <p>
+                Entalpia reúne información satelital sobre focos de calor y la presenta de forma
+                clara para que cualquier persona pueda entender dónde y cuándo existe riesgo de incendio.
+            </p>
+            <p>
+                Nuestro objetivo es acortar el tiempo entre la aparición de un incendio y la
+                reacción de quienes pueden detenerlo, y al mismo tiempo despertar el interés
+                de la comunidad por la prevención.
+            </p>
+        </div>
+
+        <ol class="steps">
+            <li class="step">
+                <span class="step-number">1</span>
+                <div>
+                    <h3>Datos satelitales</h3>
+                    <p>Recibimos información de satélites que detectan anomalías térmicas en la superficie.</p>
+                </div>
+            </li>
+            <li class="step">
+                <span class="step-number">2</span>
+                <div>
+                    <h3>Procesamiento</h3>
+                    <p>Nuestro equipo de análisis limpia y organiza los datos para identificar zonas de riesgo.</p>
+                </div>
+            </li>
+            <li class="step">
+                <span class="step-number">3</span>
+                <div>
+                    <h3>Alerta y prevención</h3>
+                    <p>Mostramos los resultados en gráficas y alertas fáciles de entender.</p>
+                </div>
+            </li>
+        </ol>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     DATOS REALES (antes "Tecnología" y estadísticas)
+     Las cifras vienen de servidor.py (/api/estadisticas),
+     que lee estadisticas.json. Se recalculan cada vez
+     que se actualizan los datos del mapa.
+========================= -->
+<section class="section section-alt" id="datos">
+
+    <div class="container">
+
+        <span class="eyebrow">Datos reales</span>
+        <h2 class="section-title">Lo que vemos desde el espacio</h2>
+        <p class="section-subtitle">
+            Un satélite de la NASA revisa México y sus alrededores todos los días buscando lugares más calientes de lo normal.
+            Estos son los números de los últimos 3 días, explicados en palabras sencillas.
+        </p>
+
+        <div class="datos-reales" hidden>
+
+            <div class="datos-cifras">
+
+                <article class="dato-real">
+                    <span class="dato-etiqueta">🔥 Puntos de calor</span>
+                    <strong data-dato="detecciones">—</strong>
+                    <p>
+                        lugares donde el satélite vio algo muy caliente: un incendio, una quema de pasto
+                        o de basura, por ejemplo.
+                    </p>
+                    <span class="dato-ic" data-dato="acumuladas"></span>
+                </article>
+
+                <article class="dato-real">
+                    <span class="dato-etiqueta">✅ Señales confiables</span>
+                    <strong data-dato="confianza">—</strong>
+                    <p data-dato="confianza-texto">de esos puntos son casi seguro fuego real, según la NASA.</p>
+                    <span class="dato-ic" data-dato="confianza-ic"></span>
+                </article>
+
+                <article class="dato-real">
+                    <span class="dato-etiqueta">⚡ Tamaño del fuego</span>
+                    <strong data-dato="frp-mediana">—</strong>
+                    <p data-dato="frp-texto">
+                        La mayoría son fuegos pequeños: la mitad suelta menos energía que esto.
+                    </p>
+                    <span class="dato-ic" data-dato="frp-ic"></span>
+                </article>
+
+                <article class="dato-real" data-bloque="modelo">
+                    <span class="dato-etiqueta">🤖 Nuestro modelo acierta</span>
+                    <strong data-dato="exactitud">—</strong>
+                    <p data-dato="exactitud-texto">
+                        Enseñamos a un programa a distinguir señales confiables de dudosas, y lo pusimos a prueba
+                        con puntos que nunca había visto.
+                    </p>
+                    <span class="dato-ic" data-dato="exactitud-ic"></span>
+                </article>
+
+            </div>
+
+            <div class="margen-explicacion">
+                <span aria-hidden="true">📏</span>
+                <p>
+                    <strong>¿Qué es el "margen"?</strong> Igual que en las encuestas de las noticias: ningún cálculo
+                    es perfecto, así que damos un rango. Estamos 95% seguros de que el valor real está dentro de él.
+                </p>
+            </div>
+
+            <div class="datos-detalle">
+
+                <article class="detalle-card">
+                    <span class="detalle-icono" aria-hidden="true">🛰️</span>
+                    <div>
+                        <h3>¿De dónde salen los datos?</h3>
+                        <p>
+                            De la NASA. Su satélite <strong>NOAA-21</strong> da vueltas a la Tierra y detecta el calor
+                            con un sensor llamado VIIRS. Nosotros descargamos esos datos con la
+                            <strong>API de NASA FIRMS</strong> (una conexión directa a su sistema).
+                            <a class="cita-ref" href="pages/referencias.html#ref-firms-api">(NASA, s.f.)</a>
+                        </p>
+                    </div>
+                </article>
+
+                <article class="detalle-card">
+                    <span class="detalle-icono" aria-hidden="true">🌡️</span>
+                    <div>
+                        <h3>¿Qué tan calientes se ven?</h3>
+                        <p data-dato="brillo">—</p>
+                    </div>
+                </article>
+
+                <article class="detalle-card">
+                    <span class="detalle-icono" aria-hidden="true">🌗</span>
+                    <div>
+                        <h3>¿De día o de noche?</h3>
+                        <p data-dato="dia">—</p>
+                    </div>
+                </article>
+
+            </div>
+
+            <details class="datos-metodo">
+                <summary>Para los curiosos: cómo calculamos estos números</summary>
+                <div>
+                    <p>
+                        Los márgenes son <strong>intervalos de confianza del 95%</strong> calculados con la
+                        <strong>distribución normal</strong> (z = 1.96).
+                    </p>
+                    <ul>
+                        <li><strong>Porcentajes</strong> (señales confiables, día/noche y aciertos del modelo): p ± 1.96 · √( p(1 − p) / n )</li>
+                        <li><strong>Promedios</strong> (energía y temperatura de brillo): x̄ ± 1.96 · s / √n</li>
+                    </ul>
+                    <p data-dato="metodo-frp"></p>
+                    <p data-dato="metodo-modelo"></p>
+                    <p data-dato="metodo-region"></p>
+                </div>
+            </details>
+
+        </div>
+
+        <div class="datos-aviso">
+            <span class="spinner"></span>
+            <p>Cargando datos...</p>
+        </div>
+
+        <p class="datos-actualizado"></p>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     CONCIENCIA Y PREVENCIÓN
+     Cada dato lleva su fuente; las referencias completas
+     están en pages/referencias.html
+========================= -->
+<section class="section" id="prevencion">
+
+    <div class="container">
+
+        <span class="eyebrow">Conciencia y prevención</span>
+        <h2 class="section-title">Casi todos los incendios se pueden evitar</h2>
+        <p class="section-subtitle">
+            La mayoría empiezan por un descuido. Conocer las causas y unos cuantos hábitos
+            protege los bosques, tu colonia y tu casa.
+        </p>
+
+        <div class="cifras">
+            <article class="cifra">
+                <strong>98%</strong>
+                <p>
+                    de los incendios forestales en México los provocan personas, sobre todo
+                    quemas agropecuarias sin control y descuidos de paseantes. <a class="cita-ref" href="pages/referencias.html#ref-ochoa">(Ochoa, 2025)</a>
+                </p>
+            </article>
+            <article class="cifra">
+                <strong>8 mil</strong>
+                <p>
+                    incendios forestales hubo en 2024, con 1.6 millones de hectáreas afectadas:
+                    60% más que en 2023. <a class="cita-ref" href="pages/referencias.html#ref-ochoa">(Ochoa, 2025)</a>
+                </p>
+            </article>
+            <article class="cifra">
+                <strong>1,100</strong>
+                <p>
+                    personas mueren cada año en México por quemaduras, según el Centro
+                    Nacional de Prevención de Desastres. <a class="cita-ref" href="pages/referencias.html#ref-cenapred">(CENAPRED, s.f.)</a>
+                </p>
+            </article>
+        </div>
+
+        <div class="prevencion-grid">
+
+            <article class="prevencion-card">
+                <span class="prevencion-icono" aria-hidden="true">🌲</span>
+                <h3>En el bosque y el monte</h3>
+                <ul>
+                    <li>No tires colillas ni cerillos, aunque parezcan apagados. <a class="cita-ref" href="pages/referencias.html#ref-meteored">(Meteored, 2023)</a></li>
+                    <li>Haz fogatas solo en sitios autorizados y apágalas por completo con agua y tierra. <a class="cita-ref" href="pages/referencias.html#ref-posta">(Posta, 2024)</a></li>
+                    <li>No dejes vidrios ni botellas: concentran el sol como una lupa. <a class="cita-ref" href="pages/referencias.html#ref-meteored">(Meteored, 2023)</a></li>
+                    <li>No quemes basura ni hagas quemas agrícolas sin autorización. <a class="cita-ref" href="pages/referencias.html#ref-chihuahua">(Gobierno del Estado de Chihuahua, 2025)</a></li>
+                </ul>
+            </article>
+
+            <article class="prevencion-card">
+                <span class="prevencion-icono" aria-hidden="true">🏠</span>
+                <h3>En casa y en la colonia</h3>
+                <ul>
+                    <li>Limpia la hierba y ramas secas de patios y lotes, y evita la pirotecnia. <a class="cita-ref" href="pages/referencias.html#ref-jimenez">(Jiménez, s.f.)</a></li>
+                    <li>No sobrecargues extensiones: las conexiones eléctricas son de las causas más comunes de incendios en el hogar. <a class="cita-ref" href="pages/referencias.html#ref-consulado">(Consulado de México en Chicago, 2016)</a></li>
+                    <li>Mantén cortinas, ropa y muebles al menos a un metro de la estufa. <a class="cita-ref" href="pages/referencias.html#ref-milpa">(Alcaldía Milpa Alta, s.f.)</a></li>
+                    <li>Revisa tus cilindros de gas y desconecta los aparatos que no uses. <a class="cita-ref" href="pages/referencias.html#ref-reyes">(Reyes, s.f.)</a></li>
+                    <li>Haz un plan de evacuación con tu familia y practíquenlo. <a class="cita-ref" href="pages/referencias.html#ref-consulado">(Consulado de México en Chicago, 2016)</a></li>
+                </ul>
+            </article>
+
+            <article class="prevencion-card prevencion-alerta">
+                <span class="prevencion-icono" aria-hidden="true">🚨</span>
+                <h3>Si hay un incendio</h3>
+                <ul>
+                    <li>Llama al <strong>911</strong>. Si es forestal, también a la CONAFOR al <strong>800 737 00 00</strong>. <a class="cita-ref" href="pages/referencias.html#ref-ochoa">(Ochoa, 2025)</a></li>
+                    <li>No intentes apagar un incendio forestal: aléjate y avisa. <a class="cita-ref" href="pages/referencias.html#ref-chilango">(Chilango, s.f.)</a></li>
+                    <li>Si en casa el fuego apenas empieza y tienes extintor, úsalo; si crece, sal del lugar. <a class="cita-ref" href="pages/referencias.html#ref-cenapred">(CENAPRED, s.f.)</a></li>
+                    <li>Si no puedes salir, cierra las puertas y tapa las rendijas con trapos mojados. <a class="cita-ref" href="pages/referencias.html#ref-milpa">(Alcaldía Milpa Alta, s.f.)</a></li>
+                    <li>Si se prende tu ropa: no corras, tírate al suelo y rueda. <a class="cita-ref" href="pages/referencias.html#ref-consulado">(Consulado de México en Chicago, 2016)</a></li>
+                </ul>
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     VIDEO DE USO
+     Coloca el video en assets/video-uso.mp4
+========================= -->
+<section class="section section-alt" id="video">
+
+    <div class="container">
+
+        <span class="eyebrow">Demostración</span>
+        <h2 class="section-title">Cómo usar Entalpia</h2>
+        <p class="section-subtitle">
+            Un recorrido rápido por la plataforma: cómo leer los datos, interpretar las alertas y navegar por la página.
+        </p>
+
+        <div class="video-wrapper">
+            <video controls preload="metadata" poster="assets/video-portada.jpg">
+                <source src="assets/video-uso.mp4" type="video/mp4">
+                Tu navegador no puede reproducir este video.
+            </video>
+
+            <div class="video-placeholder">
+                <span class="play-icon">▶</span>
+                <strong>Video de uso próximamente</strong>
+                <span>Estamos preparando un recorrido guiado por la plataforma.</span>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     CONTACTO (CTA)
+========================= -->
+<section class="contact" id="contacto">
+
+    <div class="container">
+
+        <h2>Protege tu infraestructura con Entalpia</h2>
+
+        <p>
+            Solicita una demostración personalizada de nuestra plataforma.
+        </p>
+
+        <a href="pages/contacto.html" class="btn-primary">
+            Contactar ahora
+        </a>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     ENCUESTA (gráficas en vivo)
+     Los datos vienen de Google Forms a través de servidor.py
+     (ver ENCUESTA_CSV en servidor.py)
+========================= -->
+<section class="section section-alt" id="encuesta">
+
+    <div class="container">
+
+        <span class="eyebrow">Encuesta</span>
+        <h2 class="section-title">¿Estamos preparados ante un incendio?</h2>
+        <p class="section-subtitle">
+            Resultados de nuestra encuesta anónima. Las gráficas se actualizan solas conforme llegan respuestas.
+        </p>
+
+        <div class="encuesta-resumen" hidden></div>
+        <div class="encuesta-grid" hidden></div>
+
+        <div class="encuesta-aviso">
+            <span class="spinner"></span>
+            <p>Cargando respuestas...</p>
+        </div>
+
+        <div class="encuesta-pie">
+            <span class="encuesta-actualizado"></span>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSesU20_vP476Dn8n8siBRmxc-EjMP2luDA_YULICArsKvChRA/viewform"
+               target="_blank" rel="noopener noreferrer" class="btn-primary">Responder la encuesta</a>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     FOOTER
+========================= -->
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-brand">
+            <h3>ENTALPIA</h3>
+            <p>
+                Tecnología e inteligencia artificial para la detección temprana
+                de incendios y la protección de ecosistemas e infraestructura.
+            </p>
+        </div>
+
+        <div class="footer-links">
+            <h4>Navegación</h4>
+            <a href="index.html">Inicio</a>
+            <a href="pages/ayudaysoporte.html">Ayuda y Soporte</a>
+            <a href="pages/antecedentes.html">Antecedentes</a>
+            <a href="pages/contacto.html">Contacto</a>
+            <a href="pages/referencias.html">Referencias</a>
+        </div>
+
+        <div class="footer-social">
+            <h4>Redes</h4>
+            <a href="https://www.instagram.com/entalpia.team_mx/" target="_blank" rel="noopener noreferrer">
+                Instagram
+            </a>
+        </div>
+
+        <div class="footer-buzon">
+            <h4>Buzón</h4>
+            <p>¿Dudas, ideas o comentarios? Escríbenos y te responderemos a tu correo.</p>
+
+            <form class="form-buzon" action="https://formspree.io/f/xnpdjyre" method="POST">
+                <input type="email" name="email" placeholder="Tu correo" aria-label="Tu correo" required>
+                <textarea name="mensaje" rows="3" placeholder="Tu mensaje" aria-label="Tu mensaje" required></textarea>
+                <input type="hidden" name="_subject" value="Nuevo mensaje del buzón de Entalpia">
+                <input type="text" name="_gotcha" class="campo-oculto" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <button type="submit" class="btn-primary">Enviar mensaje</button>
+                <p class="buzon-estado" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 ENTALPIA. Todos los derechos reservados.
+    </div>
+
+</footer>
+
+<script src="./js/main.js"></script>
+</body>
+</html>
