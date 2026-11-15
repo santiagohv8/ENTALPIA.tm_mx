@@ -1,0 +1,6 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+# Cuentas de usuarios (no subirlas a GitHub)
+usuarios/usuarios.db

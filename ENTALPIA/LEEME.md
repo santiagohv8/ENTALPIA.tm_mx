@@ -82,3 +82,18 @@ ENTALPIA/
 │   └── Base_Datos_Usuarios.py
 └── web/                     ← página (index.html, css, js, pages, assets)
 ```
+
+## Publicar en Render
+
+1. Sube la carpeta `ENTALPIA` a un repositorio de GitHub.
+2. En Render: **New → Web Service** → conecta el repositorio.
+3. Configuración:
+   - **Language:** Python 3
+   - **Root Directory:** la carpeta donde está `servidor.py` (por ejemplo `ENTALPIA`; vacío si está en la raíz)
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `python servidor.py`
+4. En **Environment** agrega `FIRMS_MAP_KEY` con tu clave de NASA FIRMS.
+
+`servidor.py` detecta la variable `PORT` que pone Render: escucha en `0.0.0.0` y no abre el navegador. En tu computadora sigue funcionando igual que antes.
+
+En el plan gratis el servicio se duerme tras 15 minutos sin visitas (la siguiente visita tarda ~1 minuto) y los archivos que cambian (cuentas en `usuarios.db`, datos actualizados) se borran al reiniciarse.

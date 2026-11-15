@@ -6,41 +6,41 @@
     "region": "México y alrededores (lon −118.4 a −86.7, lat 14.5 a 32.7)",
     "dias": 3
   },
-  "actualizado": "2026-11-14 15:34",
+  "actualizado": "2026-11-15 09:40",
   "nivel_confianza": 95,
-  "detecciones": 1693,
-  "acumuladas": 1870,
+  "detecciones": 1252,
+  "acumuladas": 2109,
   "confianza_alta_pct": [
-    97.5,
-    96.8,
-    98.3
+    98.5,
+    97.8,
+    99.2
   ],
   "frp_mw": [
-    9.37,
-    8.28,
-    10.46
+    6.74,
+    5.82,
+    7.66
   ],
   "brillo_ti4_k": [
-    322.3,
-    321.3,
-    323.3
+    318.9,
+    317.8,
+    319.9
   ],
-  "frp_mediana_mw": 3.07,
+  "frp_mediana_mw": 2.3,
   "dia_pct": [
-    49.4,
-    47.0,
-    51.8
+    38.9,
+    36.2,
+    41.6
   ],
   "modelo": {
     "exactitud": [
-      87.0,
-      83.4,
-      90.6
+      96.4,
+      94.1,
+      98.7
     ],
-    "exactitud_balanceada": 87.3,
-    "auc": 0.917,
-    "n_prueba": 339,
-    "n_entrenamiento": 1354,
-    "linea_base": 97.6
+    "exactitud_balanceada": 98.2,
+    "auc": 0.992,
+    "n_prueba": 251,
+    "n_entrenamiento": 1001,
+    "linea_base": 98.4
   }
 }

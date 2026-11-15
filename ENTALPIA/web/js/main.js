@@ -388,7 +388,7 @@ if (location.hash === "#demo") abrirMapa();
 
 /* =========================
    VIDEO DE USO
-   Si todavía no existe assets/video-uso.mp4 se muestra
+   Si todavía no existe el video (trailer) se muestra
    un recuadro de "Próximamente".
 ========================= */
 
@@ -402,9 +402,18 @@ if (contenedorVideo) {
     if (fuente) fuente.addEventListener("error", sinVideo);
     video.addEventListener("error", sinVideo);
 
-    if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
-        sinVideo();
-    }
+    // Si el video sí carga, se quita el aviso aunque se haya puesto antes
+    video.addEventListener("loadedmetadata", () => contenedorVideo.classList.remove("sin-video"));
+
+    // Se revisa cuando la página ya terminó de cargar (antes es demasiado pronto
+    // y algunos navegadores reportan "sin fuente" aunque el video exista)
+    const revisarVideo = () => {
+        if (video.readyState === 0 && video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+            sinVideo();
+        }
+    };
+    if (document.readyState === "complete") revisarVideo();
+    else window.addEventListener("load", revisarVideo);
 }
 
 
@@ -1210,4 +1219,44 @@ if (seccionCalendario) {
     });
 
     cargar();
+}
+
+
+/* =========================
+   JUEGO (ventana emergente)
+   El juego vive en juego/index.html y se carga en un iframe
+   solo cuando se abre; al cerrar se descarga para que se detenga.
+========================= */
+
+const botonesJuego = document.querySelectorAll("[data-abrir-juego]");
+
+if (botonesJuego.length) {
+    const scriptMain = document.querySelector('script[src$="main.js"]');
+    const rutaJuego = new URL("../juego/index.html", scriptMain ? scriptMain.src : location.href).href;
+
+    const modalJuego = crearModal("modal-juego", "modal-juego", `
+        <div class="juego-encabezado">
+            <h2>Juego de prevención</h2>
+            <button type="button" class="modal-cerrar" data-cerrar aria-label="Cerrar">×</button>
+        </div>
+        <iframe class="juego-iframe" title="Juego de prevención de incendios"></iframe>
+    `);
+
+    const iframeJuego = modalJuego.querySelector(".juego-iframe");
+
+    iframeJuego.addEventListener("load", () => {
+        if (iframeJuego.src !== "about:blank") iframeJuego.contentWindow.focus();
+    });
+
+    // Cuando la ventana se oculta, se descarga el juego
+    new MutationObserver(() => {
+        if (modalJuego.hidden) iframeJuego.src = "about:blank";
+    }).observe(modalJuego, { attributes: true, attributeFilter: ["hidden"] });
+
+    botonesJuego.forEach((boton) => {
+        boton.addEventListener("click", () => {
+            iframeJuego.src = rutaJuego;
+            abrirModal(modalJuego);
+        });
+    });
 }

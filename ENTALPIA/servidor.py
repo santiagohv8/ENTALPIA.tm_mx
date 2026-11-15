@@ -55,6 +55,10 @@ usuarios.crear_tabla()
 
 PUERTO = int(os.environ.get("ENTALPIA_PUERTO", 8000))
 
+# En Render (u otro hosting) existe la variable PORT: se escucha en ese
+# puerto y en todas las interfaces (0.0.0.0) y no se abre el navegador.
+EN_LA_NUBE = "PORT" in os.environ
+
 # =====================================
 # ENCUESTA (Google Forms -> Google Sheets)
 # =====================================
@@ -427,7 +431,12 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
     def origen_valido(self):
         # Evita que otra página web mande peticiones a este servidor
         origen = self.headers.get("Origin")
-        return origen is None or origen == f"http://{self.headers.get('Host')}"
+        host = self.headers.get("Host")
+        return origen is None or origen in (f"http://{host}", f"https://{host}")
+
+    def es_https(self):
+        # Render recibe por https y le pasa la petición al servidor por http
+        return self.headers.get("X-Forwarded-Proto", "") == "https"
 
     # ---------- GET ----------
 
@@ -470,8 +479,63 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
                 copia = dict(estado)
             return self.responder_json(200, copia)
 
+        # Videos: el navegador pide el archivo por partes (Range)
+        if self.headers.get("Range"):
+            return self.enviar_por_partes()
+
         # Todo lo demás: archivos de la carpeta web/
         super().do_GET()
+
+    def enviar_por_partes(self):
+        """Responde 206 con solo el pedazo pedido. Sin esto Chrome no puede
+        adelantar, repetir ni reanudar videos grandes como el trailer."""
+        archivo = self.translate_path(self.path)
+        if not os.path.isfile(archivo):
+            return super().do_GET()
+
+        tamano = os.path.getsize(archivo)
+        rango = self.headers.get("Range", "").strip()
+        try:
+            unidad, valores = rango.split("=", 1)
+            inicio_txt, fin_txt = valores.split(",")[0].strip().split("-", 1)
+            if unidad.strip() != "bytes":
+                raise ValueError
+            if inicio_txt == "":  # "bytes=-500": los últimos 500 bytes
+                inicio = max(0, tamano - int(fin_txt))
+                fin = tamano - 1
+            else:
+                inicio = int(inicio_txt)
+                fin = int(fin_txt) if fin_txt else tamano - 1
+            fin = min(fin, tamano - 1)
+            if inicio > fin:
+                raise ValueError
+        except ValueError:
+            self.send_response(416)
+            self.send_header("Content-Range", f"bytes */{tamano}")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+
+        largo = fin - inicio + 1
+        self.send_response(206)
+        self.send_header("Content-Type", self.guess_type(archivo))
+        self.send_header("Accept-Ranges", "bytes")
+        self.send_header("Content-Range", f"bytes {inicio}-{fin}/{tamano}")
+        self.send_header("Content-Length", str(largo))
+        self.end_headers()
+
+        try:
+            with open(archivo, "rb") as f:
+                f.seek(inicio)
+                restante = largo
+                while restante > 0:
+                    pedazo = f.read(min(64 * 1024, restante))
+                    if not pedazo:
+                        break
+                    self.wfile.write(pedazo)
+                    restante -= len(pedazo)
+        except (BrokenPipeError, ConnectionResetError):
+            pass  # el navegador canceló (por ejemplo, al adelantar el video)
 
     def enviar_estadisticas(self):
         try:
@@ -536,6 +600,8 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
 
         token = crear_sesion(usuario)
         cookie = f"sesion={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age={DURACION_SESION}"
+        if self.es_https():
+            cookie += "; Secure"
         self.responder_json(200, {"usuario": usuario}, cookie)
 
     def api_registro(self):
@@ -571,17 +637,21 @@ def main():
 
     manejador = functools.partial(Manejador, directory=carpeta_web)
 
-    try:
-        httpd = http.server.ThreadingHTTPServer(("127.0.0.1", PUERTO), manejador)
-    except OSError:
-        # Puerto ocupado: el sistema elige uno libre
-        httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), manejador)
+    if EN_LA_NUBE:
+        httpd = http.server.ThreadingHTTPServer(("0.0.0.0", int(os.environ["PORT"])), manejador)
+        print(f"ENTALPIA corriendo en 0.0.0.0:{httpd.server_address[1]}", flush=True)
+    else:
+        try:
+            httpd = http.server.ThreadingHTTPServer(("127.0.0.1", PUERTO), manejador)
+        except OSError:
+            # Puerto ocupado: el sistema elige uno libre
+            httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), manejador)
 
-    direccion = f"http://localhost:{httpd.server_address[1]}"
-    print(f"ENTALPIA corriendo en {direccion}")
-    print("Presiona Ctrl+C para detenerlo.")
+        direccion = f"http://localhost:{httpd.server_address[1]}"
+        print(f"ENTALPIA corriendo en {direccion}")
+        print("Presiona Ctrl+C para detenerlo.")
 
-    if "--no-abrir" not in sys.argv:
+    if not EN_LA_NUBE and "--no-abrir" not in sys.argv:
         webbrowser.open(direccion)
 
     # Si ya hay datos pero faltan las estadísticas, se calculan una vez
