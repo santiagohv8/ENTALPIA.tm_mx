@@ -1,0 +1,46 @@
+{
+  "disponible": true,
+  "fuente": {
+    "api": "NASA FIRMS Area API",
+    "sensor": "VIIRS 375 m (satélite NOAA-21), tiempo casi real",
+    "region": "México y alrededores (lon −118.4 a −86.7, lat 14.5 a 32.7)",
+    "dias": 3
+  },
+  "actualizado": "2026-11-14 15:34",
+  "nivel_confianza": 95,
+  "detecciones": 1693,
+  "acumuladas": 1870,
+  "confianza_alta_pct": [
+    97.5,
+    96.8,
+    98.3
+  ],
+  "frp_mw": [
+    9.37,
+    8.28,
+    10.46
+  ],
+  "brillo_ti4_k": [
+    322.3,
+    321.3,
+    323.3
+  ],
+  "frp_mediana_mw": 3.07,
+  "dia_pct": [
+    49.4,
+    47.0,
+    51.8
+  ],
+  "modelo": {
+    "exactitud": [
+      87.0,
+      83.4,
+      90.6
+    ],
+    "exactitud_balanceada": 87.3,
+    "auc": 0.917,
+    "n_prueba": 339,
+    "n_entrenamiento": 1354,
+    "linea_base": 97.6
+  }
+}
