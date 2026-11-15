@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ENTALPIA</title>
 
-    <link rel="icon" href="assets/logoEntalpia.png" type="image/png">
+    <link rel="icon" href="assets/logoEntalpia.png?v=2" type="image/png">
+    <link rel="apple-touch-icon" href="assets/logoEntalpia.png?v=2">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,12 +68,131 @@
         </h1>
 
         <p>
-            Página web enfocada en la prevención y alerta de incendios, sostenida por información satelital.
+            Unimos los registros de incendios de dos satélites de la NASA, MODIS y VIIRS,
+            en un solo calendario comparable para prevenir y alertar a tiempo.
         </p>
 
         <div class="hero-buttons">
-            <a href="#demo" class="btn-primary" data-abrir-mapa>Desplegar Demostración</a>
-            <a href="pages/contacto.html" class="btn-secondary">Contáctanos</a>
+            <a href="#calendario" class="btn-primary">Explorar el calendario</a>
+            <a href="#demo" class="btn-secondary" data-abrir-mapa>Desplegar Demo</a>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     CALENDARIO DE ACTIVIDAD DE QUEMA (reto NASA Space Apps)
+     Datos: servidor.py -> /api/calendario (armonizacion.py)
+========================= -->
+<section class="section" id="calendario">
+
+    <div class="container">
+
+        <span class="eyebrow">Reto NASA Space Apps · Armonización MODIS + VIIRS</span>
+        <h2 class="section-title">Calendario de actividad de quema</h2>
+        <p class="section-subtitle">
+            Dos satélites de la NASA vigilan el fuego, pero lo ven distinto: <strong>VIIRS</strong> ve más fino
+            y cuenta más puntos que <strong>MODIS</strong>. Si se suman sin más, parece que hay más incendios
+            de los que hay. Aquí los armonizamos para compararlos con la misma regla.
+        </p>
+
+        <div class="cal-controles">
+            <label class="cal-campo">
+                <span>Región</span>
+                <select id="cal-region"></select>
+            </label>
+            <label class="cal-campo">
+                <span>Año</span>
+                <select id="cal-anio"></select>
+            </label>
+            <div class="cal-campo">
+                <span>Ver</span>
+                <div class="cal-vistas" role="group" aria-label="Qué datos mostrar">
+                    <button type="button" class="cal-vista activa" data-vista="a">Armonizado</button>
+                    <button type="button" class="cal-vista" data-vista="mo">Solo MODIS</button>
+                    <button type="button" class="cal-vista" data-vista="vi">Solo VIIRS</button>
+                </div>
+            </div>
+        </div>
+
+        <form class="cal-bbox" id="cal-bbox" hidden>
+            <p>Escribe las coordenadas del rectángulo (grados decimales):</p>
+            <div class="cal-bbox-campos">
+                <label>Oeste <input type="number" name="oeste" step="0.01" value="-104" required></label>
+                <label>Sur <input type="number" name="sur" step="0.01" value="19" required></label>
+                <label>Este <input type="number" name="este" step="0.01" value="-102" required></label>
+                <label>Norte <input type="number" name="norte" step="0.01" value="21" required></label>
+                <button type="submit" class="btn-secondary btn-chico">Aplicar</button>
+            </div>
+        </form>
+
+        <div class="cal-contenido" hidden>
+
+            <div class="cal-resumen"></div>
+
+            <div class="cal-tarjeta">
+                <div class="cal-tarjeta-encabezado">
+                    <h3 id="cal-titulo">Actividad diaria</h3>
+                </div>
+
+                <p class="cal-como-leer">
+                    <strong>Cómo leerlo:</strong> cada cuadrito es un día del año (las columnas son semanas y las filas,
+                    de lunes a domingo). El color dice cuánto fuego detectaron los satélites ese día.
+                </p>
+
+                <div class="cal-leyenda-niveles" id="cal-leyenda" aria-label="Significado de los colores"></div>
+
+                <div class="cal-scroll">
+                    <div class="cal-marco">
+                        <span></span>
+                        <div class="cal-meses" aria-hidden="true"></div>
+                        <div class="cal-semana" aria-hidden="true">
+                            <span>L</span><span></span><span>M</span><span></span><span>V</span><span></span><span>D</span>
+                        </div>
+                        <div class="cal-cuadricula" role="grid" aria-label="Calendario de actividad de quema"></div>
+                    </div>
+                </div>
+                <p class="cal-detalle" aria-live="polite">Pasa el cursor (o toca) un día para ver su detalle.</p>
+            </div>
+
+            <div class="cal-tarjeta">
+                <div class="cal-tarjeta-encabezado">
+                    <h3>Antes y después de armonizar</h3>
+                    <div class="cal-leyenda">
+                        <span><i class="barra-modis"></i>MODIS</span>
+                        <span><i class="barra-viirs"></i>VIIRS sin armonizar</span>
+                        <span><i class="barra-arm"></i>Armonizado</span>
+                    </div>
+                </div>
+                <div class="cal-barras" role="img" aria-label="Comparación mensual MODIS, VIIRS y armonizado"></div>
+                <p class="cal-explica" id="cal-explica"></p>
+            </div>
+
+            <details class="datos-metodo">
+                <summary>Para los curiosos: cómo armonizamos MODIS y VIIRS</summary>
+                <div>
+                    <p>
+                        <strong>El problema:</strong> MODIS (satélites Terra y Aqua) tiene píxeles de ~1 km y VIIRS
+                        (satélite NOAA-20) de 375 m. Un mismo incendio aparece como un punto en MODIS y como varios
+                        en VIIRS, y VIIRS también detecta fuegos más pequeños.
+                    </p>
+                    <ul>
+                        <li><strong>1. Misma regla de conteo:</strong> cada detección se asigna a una celda de 0.01° (~1 km, el tamaño de un píxel MODIS) y contamos celdas con fuego por día, no puntos.</li>
+                        <li><strong>2. Misma escala:</strong> en los días que ambos sensores observaron calculamos k = Σ celdas MODIS / Σ celdas VIIRS y convertimos VIIRS a "equivalente MODIS" (k · VIIRS).</li>
+                        <li><strong>3. Una sola serie:</strong> el valor armonizado de cada día es el promedio de los sensores que observaron ese día.</li>
+                        <li><strong>Días inusuales:</strong> z = (x − μ) / σ comparando cada día con todos los días del mismo mes en el historial; marcamos z ≥ 2.</li>
+                        <li><strong>Filtro de calidad:</strong> MODIS con confianza ≥ 30 % y VIIRS con confianza nominal o alta.</li>
+                    </ul>
+                    <p id="cal-metodo-numeros"></p>
+                </div>
+            </details>
+
+        </div>
+
+        <div class="cal-aviso">
+            <span class="spinner"></span>
+            <p>Cargando calendario...</p>
         </div>
 
     </div>
@@ -104,22 +224,22 @@
             <li class="step">
                 <span class="step-number">1</span>
                 <div>
-                    <h3>Datos satelitales</h3>
-                    <p>Recibimos información de satélites que detectan anomalías térmicas en la superficie.</p>
+                    <h3>Dos satélites, una sola historia</h3>
+                    <p>Descargamos las detecciones de calor de MODIS y VIIRS desde la API de NASA FIRMS.</p>
                 </div>
             </li>
             <li class="step">
                 <span class="step-number">2</span>
                 <div>
-                    <h3>Procesamiento</h3>
-                    <p>Nuestro equipo de análisis limpia y organiza los datos para identificar zonas de riesgo.</p>
+                    <h3>Armonización</h3>
+                    <p>Ponemos a los dos sensores en la misma escala para que sus registros se puedan comparar.</p>
                 </div>
             </li>
             <li class="step">
                 <span class="step-number">3</span>
                 <div>
-                    <h3>Alerta y prevención</h3>
-                    <p>Mostramos los resultados en gráficas y alertas fáciles de entender.</p>
+                    <h3>Calendario y prevención</h3>
+                    <p>Mostramos cuándo y dónde hay más fuego, los días inusuales y cómo prevenirlo.</p>
                 </div>
             </li>
         </ol>
@@ -367,27 +487,6 @@
                 <span>Estamos preparando un recorrido guiado por la plataforma.</span>
             </div>
         </div>
-
-    </div>
-
-</section>
-
-<!-- =========================
-     CONTACTO (CTA)
-========================= -->
-<section class="contact" id="contacto">
-
-    <div class="container">
-
-        <h2>Protege tu infraestructura con Entalpia</h2>
-
-        <p>
-            Solicita una demostración personalizada de nuestra plataforma.
-        </p>
-
-        <a href="pages/contacto.html" class="btn-primary">
-            Contactar ahora
-        </a>
 
     </div>
 

@@ -10,12 +10,12 @@ ruta = os.path.dirname(os.path.abspath(__file__))
 # 1. DESCARGAR DATOS
 # =====================================
 
-MAP_KEY = "8a910e22264bc8011260f0aa9a093dcd"
+from config import MAP_KEY, AREA, URL_FIRMS
 
 url = (
-    f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/"
+    f"{URL_FIRMS}/api/area/csv/"
     f"{MAP_KEY}/VIIRS_NOAA21_NRT/"
-    f"-118.4,14.5,-86.7,32.7/3"
+    f"{AREA}/3"
 )
 
 print("Descargando datos...")

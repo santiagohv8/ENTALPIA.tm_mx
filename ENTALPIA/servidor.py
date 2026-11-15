@@ -30,6 +30,7 @@ import functools
 import csv
 import io
 import urllib.request
+import urllib.parse
 from http import HTTPStatus
 
 # =====================================
@@ -41,6 +42,11 @@ carpeta_web = os.path.join(ruta, "web")
 archivo_mapa = os.path.join(ruta, "mapa_incendios.html")
 archivo_csv = os.path.join(ruta, "incendios_modelo.csv")
 archivo_estadisticas = os.path.join(ruta, "estadisticas.json")
+
+archivo_historico = os.path.join(ruta, "historico.db")
+
+sys.path.insert(0, ruta)
+import armonizacion  # noqa: E402
 
 sys.path.insert(0, os.path.join(ruta, "usuarios"))
 import Base_Datos_Usuarios as usuarios  # noqa: E402
@@ -165,6 +171,101 @@ def correr_pasos():
         estado.update(estado="listo", paso="", mensaje="Mapa actualizado.",
                       actualizado=time.strftime("%Y-%m-%d %H:%M"))
 
+    # Después del mapa, el historial MODIS + VIIRS (puede tardar)
+    iniciar_historial()
+
+
+# =====================================
+# 3a. HISTORIAL MODIS + VIIRS (calendario)
+# =====================================
+# Corre aparte porque la primera descarga tarda varios minutos.
+
+estado_historial = {"estado": "inactivo", "progreso": "", "mensaje": ""}
+
+
+def correr_historial():
+    try:
+        proceso = subprocess.Popen(
+            [sys.executable, "-u", os.path.join(ruta, "historico.py")],
+            cwd=ruta, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, encoding="utf-8", errors="replace",
+        )
+        ultimas = []
+        for linea in proceso.stdout:
+            linea = linea.strip()
+            if not linea:
+                continue
+            ultimas = (ultimas + [linea])[-3:]
+            with candado:
+                estado_historial["progreso"] = linea
+        proceso.wait(timeout=60)
+        ok = proceso.returncode == 0
+    except Exception as error:
+        ok, ultimas = False, [str(error)]
+
+    if not ok:
+        print("\n[ERROR] historico.py\n" + "\n".join(ultimas))
+
+    with candado:
+        estado_historial.update(
+            estado="listo" if ok else "error",
+            progreso="",
+            mensaje="" if ok else " ".join(ultimas),
+        )
+        cache_calendario.clear()
+
+
+def iniciar_historial():
+    with candado:
+        if estado_historial["estado"] == "ejecutando":
+            return False
+        estado_historial.update(estado="ejecutando", progreso="Iniciando descarga...", mensaje="")
+    threading.Thread(target=correr_historial, daemon=True).start()
+    return True
+
+
+cache_calendario = {}
+
+
+def leer_calendario(consulta):
+    """consulta: parámetros de la URL (region, anio, bbox)."""
+    with candado:
+        info_historial = dict(estado_historial)
+
+    if not os.path.exists(archivo_historico):
+        return {"disponible": False, "historial": info_historial, "regiones": armonizacion.REGIONES}
+
+    bbox = None
+    if consulta.get("bbox"):
+        try:
+            bbox = [float(v) for v in consulta["bbox"].split(",")]
+            assert len(bbox) == 4 and bbox[0] < bbox[2] and bbox[1] < bbox[3]
+            assert -180 <= bbox[0] <= 180 and -180 <= bbox[2] <= 180
+            assert -90 <= bbox[1] <= 90 and -90 <= bbox[3] <= 90
+        except (ValueError, AssertionError):
+            bbox = None
+    region = armonizacion.region_por_id(consulta.get("region", "mexico"))
+    if bbox is None:
+        bbox = region["bbox"]
+
+    try:
+        anio = int(consulta.get("anio", ""))
+    except ValueError:
+        anio = None
+
+    clave = (tuple(bbox), anio, os.path.getmtime(archivo_historico))
+    with candado:
+        guardado = cache_calendario.get(clave)
+    if guardado is None:
+        guardado = armonizacion.calcular(archivo_historico, bbox, anio)
+        with candado:
+            if len(cache_calendario) > 50:
+                cache_calendario.clear()
+            cache_calendario[clave] = guardado
+
+    return {**guardado, "bbox": bbox, "region": region["id"] if consulta.get("bbox") is None else "personalizada",
+            "historial": info_historial, "regiones": armonizacion.REGIONES}
+
 
 def actualizacion_automatica():
     """Revisa cada 10 minutos si los datos ya tienen más de
@@ -177,6 +278,8 @@ def actualizacion_automatica():
 
         if antiguedad > ACTUALIZAR_CADA_HORAS * 3600 and iniciar_actualizacion():
             print("Actualizando datos de NASA FIRMS automáticamente...")
+        if not os.path.exists(archivo_historico) and iniciar_historial():
+            print("Descargando el historial MODIS + VIIRS por primera vez (tarda varios minutos)...")
 
         time.sleep(10 * 60)
 
@@ -271,6 +374,24 @@ las detecciones y crear el mapa.</p>
 
 class Manejador(http.server.SimpleHTTPRequestHandler):
 
+    # Tipos de archivo fijos: en Windows, Python lee estos tipos del
+    # registro del sistema y a veces vienen mal (por ejemplo .png o .js),
+    # lo que hace que el navegador descarte el logo o los scripts.
+    extensions_map = {
+        **http.server.SimpleHTTPRequestHandler.extensions_map,
+        ".html": "text/html; charset=utf-8",
+        ".css": "text/css; charset=utf-8",
+        ".js": "text/javascript; charset=utf-8",
+        ".json": "application/json",
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".webp": "image/webp",
+        ".svg": "image/svg+xml",
+        ".ico": "image/x-icon",
+        ".mp4": "video/mp4",
+    }
+
     # ---------- utilidades ----------
 
     def log_message(self, *args):
@@ -316,6 +437,10 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
         if ruta_url == "/mapa":
             return self.enviar_mapa()
 
+        # Algunos navegadores piden /favicon.ico aunque la página diga otro ícono
+        if ruta_url == "/favicon.ico":
+            self.path = "/assets/logoEntalpia.png"
+
         if ruta_url == "/api/sesion":
             usuario = usuario_de_sesion(self.token())
             return self.responder_json(200, {"usuario": usuario})
@@ -326,6 +451,14 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
             except Exception as error:
                 print(f"[ERROR] No se pudo leer la encuesta: {error}")
                 return self.responder_json(502, {"error": "No se pudieron cargar las respuestas."})
+
+        if ruta_url == "/api/calendario":
+            consulta = dict(urllib.parse.parse_qsl(self.path.partition("?")[2]))
+            try:
+                return self.responder_json(200, leer_calendario(consulta))
+            except Exception as error:
+                print(f"[ERROR] calendario: {error}")
+                return self.responder_json(500, {"error": "No se pudo calcular el calendario."})
 
         if ruta_url == "/api/estadisticas":
             return self.enviar_estadisticas()

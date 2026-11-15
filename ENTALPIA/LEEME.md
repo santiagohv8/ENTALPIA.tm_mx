@@ -39,6 +39,15 @@ venv/bin/python modRegresion_Logistica.py         # macOS / Linux
 
 La regresión logística abre ventanas de matplotlib, así que se corre aparte (ver arriba).
 
+## Calendario MODIS + VIIRS (reto NASA Space Apps)
+
+El reto *Harmonization of MODIS and VIIRS Hot Spots* pide unir los registros de los dos sensores en un calendario de actividad de quema. Lo hacen dos archivos:
+
+- `historico.py` descarga de NASA FIRMS 2 años de detecciones de **MODIS** (Terra/Aqua, `MODIS_SP` + `MODIS_NRT`) y **VIIRS** (NOAA-20, `VIIRS_NOAA20_SP` + `VIIRS_NOAA20_NRT`) y las guarda en `historico.db`. La **primera vez tarda varios minutos** (unas 300 consultas); después solo descarga lo nuevo. Se cambia el periodo con `AÑOS_HISTORIAL`.
+- `armonizacion.py` cuenta celdas de ~1 km con fuego por día (en lugar de puntos), calcula el factor `k = Σ celdas MODIS / Σ celdas VIIRS` con los días que observaron ambos, combina los dos sensores en una serie y marca los días inusuales con `z = (x − μ) / σ ≥ 2`.
+
+El servidor descarga el historial solo al arrancar si no existe y lo actualiza junto con el mapa. La clave de NASA y el área están en `config.py` (mejor usa la variable de entorno `FIRMS_MAP_KEY`).
+
 ## Datos reales y actualización automática
 
 Mientras `servidor.py` esté encendido, descarga datos nuevos de NASA FIRMS cada 3 horas (se cambia en `ACTUALIZAR_CADA_HORAS`, 0 = solo con el botón). Cada actualización recalcula `estadisticas.json`: detecciones, % de confianza, FRP promedio, temperatura de brillo y exactitud del modelo, con intervalos de confianza del 95% (distribución normal). Para recalcular a mano: `venv\Scripts\python estadisticas.py`.
@@ -65,6 +74,9 @@ ENTALPIA/
 ├── base_datos.py            ← guarda en incendios.db
 ├── modRegresion_Logistica.py
 ├── estadisticas.py          ← cifras con intervalo de confianza
+├── config.py                ← MAP_KEY y área de NASA FIRMS
+├── historico.py             ← historial MODIS + VIIRS (historico.db)
+├── armonizacion.py          ← calendario armonizado
 ├── mapa_incendios.py        ← genera mapa_incendios.html
 ├── usuarios/
 │   └── Base_Datos_Usuarios.py

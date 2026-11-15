@@ -902,3 +902,312 @@ function cargarDatosReales() {
 }
 
 cargarDatosReales();
+
+
+/* =========================
+   CALENDARIO DE ACTIVIDAD DE QUEMA (MODIS + VIIRS)
+   Datos de servidor.py -> /api/calendario
+========================= */
+
+const seccionCalendario = document.getElementById("calendario");
+
+if (seccionCalendario) {
+    const $ = (sel) => seccionCalendario.querySelector(sel);
+    const selRegion = $("#cal-region");
+    const selAnio = $("#cal-anio");
+    const formBbox = $("#cal-bbox");
+    const contenido = $(".cal-contenido");
+    const aviso = $(".cal-aviso");
+    const cuadricula = $(".cal-cuadricula");
+    const filaMeses = $(".cal-meses");
+    const detalle = $(".cal-detalle");
+
+    const MESES_CORTOS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const NIVELES = ["Sin fuego", "Poco", "Moderado", "Alto", "Muy alto"];
+    let cortes = [0, 0, 0];
+    const NOMBRES_VISTA = { a: "Armonizado", mo: "Solo MODIS", vi: "Solo VIIRS" };
+
+    let datos = null;
+    let vista = "a";
+    let espera = null;
+    const num = (v, d = 0) => Number(v).toLocaleString("es-MX", { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fechaLarga = (iso) => new Date(`${iso}T12:00:00`).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+
+    const avisar = (texto, cargando = false) => {
+        aviso.replaceChildren();
+        if (cargando) aviso.appendChild(Object.assign(document.createElement("span"), { className: "spinner" }));
+        aviso.appendChild(Object.assign(document.createElement("p"), { textContent: texto }));
+        aviso.hidden = false;
+        contenido.hidden = true;
+    };
+
+    const parametros = () => {
+        const p = new URLSearchParams();
+        if (selRegion.value === "personalizada") {
+            const f = formBbox;
+            p.set("bbox", [f.oeste.value, f.sur.value, f.este.value, f.norte.value].join(","));
+        } else if (selRegion.value) {
+            p.set("region", selRegion.value);
+        }
+        if (selAnio.value) p.set("anio", selAnio.value);
+        return p.toString();
+    };
+
+    const llenarSelects = (d) => {
+        if (!selRegion.options.length) {
+            d.regiones.forEach((r) => selRegion.add(new Option(r.nombre, r.id)));
+            selRegion.add(new Option("Personalizada (escribir coordenadas)", "personalizada"));
+        }
+        if (d.anios) {
+            const actual = String(d.anio);
+            selAnio.replaceChildren(...d.anios.slice().reverse().map((a) => new Option(a, a)));
+            selAnio.value = actual;
+        }
+    };
+
+    // ---------- calendario ----------
+    const valorDia = (dia) => (vista === "a" ? dia.a : dia[vista]);
+
+    const dibujarCalendario = () => {
+        const anio = datos.anio;
+        const porFecha = new Map(datos.dias.map((d) => [d.f, d]));
+        const inicio = new Date(Date.UTC(anio, 0, 1));
+        const desfase = (inicio.getUTCDay() + 6) % 7;      // semana empieza en lunes
+        const totalDias = ((anio % 4 === 0 && anio % 100 !== 0) || anio % 400 === 0) ? 366 : 365;
+        const hoyIso = new Date().toISOString().slice(0, 10);
+
+        // Niveles de color: los días con fuego se dividen en 4 grupos
+        // del mismo tamaño (cuartiles), de menos a más fuego.
+        const valores = datos.dias.map(valorDia).filter((v) => v !== null && v > 0).sort((x, y) => x - y);
+        const cuartil = (q) => valores.length ? valores[Math.min(valores.length - 1, Math.floor(q * valores.length))] : 0;
+        cortes = [cuartil(0.25), cuartil(0.5), cuartil(0.75)];
+        dibujarLeyenda(valores.length ? valores[valores.length - 1] : 0);
+
+        cuadricula.replaceChildren();
+        for (let i = 0; i < desfase; i++) cuadricula.appendChild(Object.assign(document.createElement("span"), { className: "cal-dia vacio" }));
+
+        for (let i = 0; i < totalDias; i++) {
+            const fecha = new Date(inicio.getTime() + i * 86400000).toISOString().slice(0, 10);
+            const dia = porFecha.get(fecha);
+            const celda = document.createElement("span");
+            celda.className = "cal-dia";
+            celda.dataset.fecha = fecha;
+
+            if (fecha > hoyIso) {
+                celda.classList.add("futuro");
+            } else if (!dia || valorDia(dia) === null) {
+                celda.classList.add("sin-datos");
+            } else {
+                celda.classList.add(`nivel-${nivel(valorDia(dia))}`);
+                if (vista === "a" && dia.z >= datos.armonizacion.umbral_z && dia.a > 0) celda.classList.add("inusual");
+                celda.tabIndex = 0;
+            }
+            cuadricula.appendChild(celda);
+        }
+
+        // Etiquetas de meses alineadas a las columnas
+        filaMeses.replaceChildren();
+        for (let m = 0; m < 12; m++) {
+            const diaDelAnio = Math.round((Date.UTC(anio, m, 1) - inicio.getTime()) / 86400000);
+            const etiqueta = document.createElement("span");
+            etiqueta.textContent = MESES_CORTOS[m];
+            etiqueta.style.gridColumnStart = Math.floor((desfase + diaDelAnio) / 7) + 1;
+            filaMeses.appendChild(etiqueta);
+        }
+
+        $("#cal-titulo").textContent = `Actividad diaria ${anio} · ${NOMBRES_VISTA[vista]}`;
+        detalle.textContent = "Pasa el cursor (o toca) un día para ver su detalle.";
+    };
+
+    const nivel = (v) => (v <= 0 ? 0 : v <= cortes[0] ? 1 : v <= cortes[1] ? 2 : v <= cortes[2] ? 3 : 4);
+
+    // Leyenda con el nombre de cada color y su rango real de valores
+    const dibujarLeyenda = (maximo) => {
+        const redondear = (v) => (v < 10 ? Math.round(v * 10) / 10 : Math.round(v));
+        const rangos = [
+            "0",
+            `hasta ${num(redondear(cortes[0]))}`,
+            `${num(redondear(cortes[0]))} – ${num(redondear(cortes[1]))}`,
+            `${num(redondear(cortes[1]))} – ${num(redondear(cortes[2]))}`,
+            `más de ${num(redondear(cortes[2]))} (máx. ${num(redondear(maximo))})`,
+        ];
+        const unidad = vista === "a"
+            ? "Números = áreas de ~1 km con fuego en el día (equivalente MODIS)."
+            : `Números = puntos de calor detectados por ${vista === "mo" ? "MODIS" : "VIIRS"} en el día.`;
+
+        const leyenda = $("#cal-leyenda");
+        leyenda.replaceChildren();
+
+        const fila = document.createElement("div");
+        fila.className = "cal-niveles";
+        NIVELES.forEach((nombre, i) => {
+            const item = document.createElement("span");
+            item.className = "cal-nivel";
+            item.append(
+                Object.assign(document.createElement("i"), { className: `muestra nivel-${i}` }),
+                Object.assign(document.createElement("strong"), { textContent: nombre }),
+                Object.assign(document.createElement("small"), { textContent: rangos[i] }),
+            );
+            fila.appendChild(item);
+        });
+        leyenda.appendChild(fila);
+
+        const extras = document.createElement("div");
+        extras.className = "cal-extras";
+        if (vista === "a") {
+            const inusual = document.createElement("span");
+            inusual.append(Object.assign(document.createElement("i"), { className: "muestra nivel-3 inusual-muestra" }),
+                           document.createTextNode("Borde blanco: día inusual (mucho más fuego de lo normal para ese mes)"));
+            extras.appendChild(inusual);
+        }
+        const sin = document.createElement("span");
+        sin.append(Object.assign(document.createElement("i"), { className: "muestra sin-datos-muestra" }),
+                   document.createTextNode("Rayado: sin datos del satélite"));
+        extras.append(sin, Object.assign(document.createElement("span"), { className: "cal-unidad", textContent: unidad }));
+        leyenda.appendChild(extras);
+    };
+
+    const mostrarDetalle = (celda) => {
+        const fecha = celda?.dataset?.fecha;
+        if (!fecha || !datos) return;
+        const dia = datos.dias.find((d) => d.f === fecha);
+        if (!dia) {
+            detalle.textContent = `${fechaLarga(fecha)}: sin datos.`;
+            return;
+        }
+        const partes = [
+            `${fechaLarga(fecha)}`,
+            `Nivel: ${NIVELES[nivel(valorDia(dia) || 0)]}`,
+            `Armonizado: ${num(dia.a, 1)} áreas de ~1 km con fuego (equivalente MODIS)`,
+            dia.mo !== null ? `MODIS: ${num(dia.mo)} puntos` : "MODIS: sin datos",
+            dia.vi !== null ? `VIIRS: ${num(dia.vi)} puntos` : "VIIRS: sin datos",
+        ];
+        if (dia.z >= datos.armonizacion.umbral_z && dia.a > 0) {
+            partes.push(`⚠ Día inusual: mucho más fuego de lo normal para ese mes (z = ${num(dia.z, 1)})`);
+        }
+        detalle.textContent = partes.join(" · ");
+    };
+
+    cuadricula.addEventListener("mouseover", (e) => mostrarDetalle(e.target.closest(".cal-dia")));
+    cuadricula.addEventListener("focusin", (e) => mostrarDetalle(e.target.closest(".cal-dia")));
+    cuadricula.addEventListener("click", (e) => mostrarDetalle(e.target.closest(".cal-dia")));
+
+    // ---------- resumen ----------
+    const dibujarResumen = () => {
+        const r = datos.resumen;
+        const tarjetas = [
+            [num(r.dias_con_actividad), `días con fuego de ${num(r.dias_observados)} observados en ${datos.anio}`],
+            [r.dia_maximo ? fechaLarga(r.dia_maximo.f) : "—",
+             r.dia_maximo ? `día más intenso: ${num(r.dia_maximo.a, 0)} áreas de ~1 km con fuego` : "día más intenso"],
+            [num(r.inusuales), "días inusuales (mucho más fuego de lo normal para su mes)"],
+            [r.meses_criticos.join(", ") || "—", "temporada crítica: los meses con más fuego en el historial"],
+        ];
+        const caja = $(".cal-resumen");
+        caja.replaceChildren(...tarjetas.map(([valor, texto]) => {
+            const el = document.createElement("div");
+            el.className = "resumen-dato";
+            el.append(Object.assign(document.createElement("strong"), { textContent: valor }),
+                      Object.assign(document.createElement("span"), { textContent: texto }));
+            return el;
+        }));
+    };
+
+    // ---------- barras mensuales ----------
+    const dibujarBarras = () => {
+        const contenedor = $(".cal-barras");
+        const maximo = Math.max(1, ...datos.meses.flatMap((m) => [m.modis, m.viirs, m.armonizado]));
+        contenedor.replaceChildren(...datos.meses.map((m) => {
+            const grupo = document.createElement("div");
+            grupo.className = "cal-mes";
+            const barras = document.createElement("div");
+            barras.className = "cal-mes-barras";
+            [["modis", m.modis, "MODIS", "puntos"], ["viirs", m.viirs, "VIIRS sin armonizar", "puntos"],
+             ["arm", m.armonizado, "Armonizado", "áreas de ~1 km con fuego"]].forEach(([clase, valor, nombre, unidad]) => {
+                const b = document.createElement("span");
+                b.className = `barra-${clase}`;
+                b.style.height = `${(valor / maximo) * 100}%`;
+                b.title = `${m.nombre}: ${nombre} ${num(valor)} ${unidad}`;
+                barras.appendChild(b);
+            });
+            grupo.append(barras, Object.assign(document.createElement("span"), { className: "cal-mes-nombre", textContent: MESES_CORTOS[m.m - 1] }));
+            return grupo;
+        }));
+
+        const a = datos.armonizacion;
+        const nombreRegion = selRegion.selectedOptions[0]?.textContent || "esta región";
+        $("#cal-explica").textContent = a.razon_puntos
+            ? `En ${nombreRegion}, VIIRS registra ${num(a.razon_puntos, 1)} veces más puntos que MODIS para los mismos días. ` +
+              `Después de armonizar, la diferencia diaria promedio entre los dos sensores baja de ${num(a.diferencia_antes, 1)} ` +
+              `a ${num(a.diferencia_despues, 1)}, así que ya se pueden comparar y combinar.`
+            : "Todavía no hay suficientes días observados por ambos sensores para comparar en esta región.";
+
+        $("#cal-metodo-numeros").textContent =
+            `Con los datos actuales: k = ${num(a.k, 3)} (calculado con ${num(a.dias_traslape)} días observados por ambos sensores). ` +
+            `Correlación diaria MODIS vs VIIRS armonizado: r = ${a.r_armonizado ?? "—"}. ` +
+            `Periodo: ${fechaLarga(datos.periodo[0])} a ${fechaLarga(datos.periodo[1])}; ` +
+            `${num(a.puntos_modis)} puntos MODIS y ${num(a.puntos_viirs)} puntos VIIRS en la región.`;
+    };
+
+    const dibujarTodo = () => {
+        dibujarResumen();
+        dibujarCalendario();
+        dibujarBarras();
+        aviso.hidden = true;
+        contenido.hidden = false;
+    };
+
+    // ---------- carga ----------
+    const cargar = async () => {
+        clearTimeout(espera);
+        if (!HAY_SERVIDOR) {
+            avisar("El calendario necesita el servidor de Entalpia (python servidor.py).");
+            return;
+        }
+
+        let d;
+        try {
+            d = await llamarApi(`/api/calendario?${parametros()}`);
+        } catch (error) {
+            avisar("No se pudo cargar el calendario en este momento.");
+            return;
+        }
+
+        llenarSelects(d);
+        const h = d.historial || {};
+
+        if (!d.disponible) {
+            if (h.estado === "ejecutando") {
+                avisar(`Descargando el historial de MODIS y VIIRS por primera vez. Puede tardar varios minutos... ${h.progreso || ""}`, true);
+            } else if (h.estado === "error") {
+                avisar(`No se pudo descargar el historial: ${h.mensaje || "revisa la conexión a internet"}.`);
+            } else {
+                avisar("Todavía no hay historial. Se descargará automáticamente en unos momentos.", true);
+            }
+            espera = setTimeout(cargar, 5000);
+            return;
+        }
+
+        datos = d;
+        dibujarTodo();
+
+        // Si se está actualizando, volver a revisar más tarde
+        if (h.estado === "ejecutando") espera = setTimeout(cargar, 20000);
+    };
+
+    selRegion.addEventListener("change", () => {
+        formBbox.hidden = selRegion.value !== "personalizada";
+        if (selRegion.value !== "personalizada") cargar();
+    });
+    selAnio.addEventListener("change", cargar);
+    formBbox.addEventListener("submit", (e) => { e.preventDefault(); cargar(); });
+
+    seccionCalendario.querySelectorAll(".cal-vista").forEach((boton) => {
+        boton.addEventListener("click", () => {
+            vista = boton.dataset.vista;
+            seccionCalendario.querySelectorAll(".cal-vista").forEach((b) => b.classList.toggle("activa", b === boton));
+            if (datos) dibujarCalendario();
+        });
+    });
+
+    cargar();
+}

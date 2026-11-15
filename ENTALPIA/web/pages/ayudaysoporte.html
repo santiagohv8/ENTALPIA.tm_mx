@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ayuda y Soporte | ENTALPIA</title>
 
-    <link rel="icon" href="../assets/logoEntalpia.png" type="image/png">
+    <link rel="icon" href="../assets/logoEntalpia.png?v=2" type="image/png">
+    <link rel="apple-touch-icon" href="../assets/logoEntalpia.png?v=2">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,8 +60,8 @@
         <div>
             <h1>Centro de ayuda de Entalpia</h1>
             <p>
-                Encuentra respuestas sobre cómo usar la plataforma, leer los datos satelitales,
-                entender las alertas y jugar. Usa el buscador o filtra por tema.
+                Encuentra respuestas sobre cómo usar el mapa, entender los datos satelitales,
+                prevenir incendios, participar en la encuesta y cuidar tu cuenta. Usa el buscador o filtra por tema.
             </p>
             <a href="#buscador-ayuda" class="btn-primary">Buscar ayuda</a>
         </div>
@@ -98,13 +99,19 @@
                 <input type="checkbox" value="datos"> Mapa y datos
             </label>
             <label class="filter-option">
+                <input type="checkbox" value="prevencion"> Prevención
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" value="encuesta"> Encuesta
+            </label>
+            <label class="filter-option">
                 <input type="checkbox" value="alertas"> Alertas
             </label>
             <label class="filter-option">
                 <input type="checkbox" value="juego"> Juego
             </label>
             <label class="filter-option">
-                <input type="checkbox" value="cuenta"> Cuenta
+                <input type="checkbox" value="cuenta"> Cuenta y privacidad
             </label>
             <label class="filter-option">
                 <input type="checkbox" value="soporte"> Soporte técnico
@@ -120,7 +127,7 @@
 
         <form class="search-bar" id="form-buscador" role="search">
             <span class="search-icon" aria-hidden="true">⌕</span>
-            <input type="search" id="buscador-ayuda" placeholder="Buscar (por ejemplo: alertas, gráfica, juego)"
+            <input type="search" id="buscador-ayuda" placeholder="Buscar (por ejemplo: mapa, margen, encuesta)"
                    aria-label="Buscar en el centro de ayuda" autocomplete="off">
             <button type="submit" aria-label="Buscar">➤</button>
         </form>
@@ -137,49 +144,85 @@
             <a href="#faq-que-es" class="help-card" data-categoria="primeros-pasos">
                 <span class="card-category">Primeros pasos</span>
                 <h3>¿Qué es Entalpia?</h3>
-                <p>Conoce qué hace la plataforma y cómo puede ayudarte a prevenir incendios.</p>
+                <p>Qué hacemos, quiénes somos y para qué sirve la página.</p>
             </a>
 
             <a href="#faq-emergencia" class="help-card" data-categoria="primeros-pasos">
                 <span class="card-category">Primeros pasos</span>
                 <h3>Qué hacer si ves un incendio</h3>
-                <p>A quién llamar y qué información tener a la mano en una emergencia.</p>
+                <p>A quién llamar y cómo protegerte en una emergencia.</p>
             </a>
 
-            <a href="#faq-grafica" class="help-card" data-categoria="datos">
+            <a href="#faq-calendario" class="help-card" data-categoria="datos">
                 <span class="card-category">Mapa y datos</span>
-                <h3>Cómo leer la gráfica de datos</h3>
-                <p>Entiende qué significa cada barra y cómo interpretar los focos de calor.</p>
+                <h3>El calendario de actividad de quema</h3>
+                <p>Cómo leer el calendario, elegir región y año, y qué es un día inusual.</p>
+            </a>
+
+            <a href="#faq-armonizar" class="help-card" data-categoria="datos">
+                <span class="card-category">Mapa y datos</span>
+                <h3>¿Por qué armonizar MODIS y VIIRS?</h3>
+                <p>Por qué dos satélites cuentan distinto el mismo fuego y cómo lo corregimos.</p>
+            </a>
+
+            <a href="#faq-mapa" class="help-card" data-categoria="datos">
+                <span class="card-category">Mapa y datos</span>
+                <h3>Cómo usar el mapa de la demo</h3>
+                <p>Qué significan los puntos, los colores y los números del mapa.</p>
+            </a>
+
+            <a href="#faq-numeros" class="help-card" data-categoria="datos">
+                <span class="card-category">Mapa y datos</span>
+                <h3>Entender "Lo que vemos desde el espacio"</h3>
+                <p>Qué quiere decir cada cifra del Inicio, en palabras sencillas.</p>
+            </a>
+
+            <a href="#faq-margen" class="help-card" data-categoria="datos">
+                <span class="card-category">Mapa y datos</span>
+                <h3>¿Qué es el margen?</h3>
+                <p>Por qué damos un rango y no solo un número.</p>
             </a>
 
             <a href="#faq-datos" class="help-card" data-categoria="datos">
                 <span class="card-category">Mapa y datos</span>
                 <h3>¿De dónde vienen los datos?</h3>
-                <p>Cómo se obtiene y procesa la información satelital que mostramos.</p>
+                <p>La NASA, su satélite y cada cuándo se actualiza la información.</p>
+            </a>
+
+            <a href="#faq-prevencion" class="help-card" data-categoria="prevencion">
+                <span class="card-category">Prevención</span>
+                <h3>Cómo prevenir incendios</h3>
+                <p>Consejos para el bosque, tu casa y tu colonia.</p>
+            </a>
+
+            <a href="#faq-encuesta" class="help-card" data-categoria="encuesta">
+                <span class="card-category">Encuesta</span>
+                <h3>La encuesta y sus gráficas</h3>
+                <p>Cómo participar y cómo leer los resultados.</p>
             </a>
 
             <a href="#faq-alertas" class="help-card" data-categoria="alertas">
                 <span class="card-category">Alertas</span>
-                <h3>Cómo funcionan las alertas</h3>
-                <p>Qué activa una alerta y qué significa cuando aparece una.</p>
+                <h3>Alertas y WhatsApp</h3>
+                <p>Qué avisos damos hoy y lo que viene.</p>
             </a>
 
             <a href="#faq-juego" class="help-card" data-categoria="juego">
                 <span class="card-category">Juego</span>
-                <h3>Cómo jugar</h3>
-                <p>Aprende sobre la prevención de incendios mientras juegas.</p>
+                <h3>El juego de Entalpia</h3>
+                <p>Aprender a prevenir incendios jugando.</p>
             </a>
 
-            <a href="#faq-sesion" class="help-card" data-categoria="cuenta">
-                <span class="card-category">Cuenta</span>
-                <h3>Iniciar sesión</h3>
-                <p>Información sobre las cuentas de usuario de Entalpia.</p>
+            <a href="#faq-privacidad" class="help-card" data-categoria="cuenta">
+                <span class="card-category">Cuenta y privacidad</span>
+                <h3>Tu cuenta y tus datos</h3>
+                <p>Qué guardamos, para qué y cómo lo protegemos.</p>
             </a>
 
             <a href="#faq-problema" class="help-card" data-categoria="soporte">
                 <span class="card-category">Soporte técnico</span>
                 <h3>Reportar un problema</h3>
-                <p>¿Algo no carga o no funciona como esperabas? Cuéntanos.</p>
+                <p>Si algo no carga o no funciona, cuéntanos.</p>
             </a>
 
         </div>
@@ -201,10 +244,10 @@
                 <summary>¿Qué es Entalpia?</summary>
                 <div class="faq-answer">
                     <p>
-                        Entalpia es una página web enfocada en la prevención y alerta de incendios,
-                        sostenida por información satelital. Reunimos datos de focos de calor y los
-                        presentamos de forma sencilla para que cualquier persona pueda entender el riesgo
-                        de incendio en su zona.
+                        Entalpia es una página web para la prevención y alerta de incendios, hecha por un equipo de 6 estudiantes universitarios para el reto <strong>NASA Space Apps Challenge</strong>.
+                    </p>
+                    <p>
+                        Usamos datos satelitales de la NASA para mostrar en un mapa dónde se están detectando puntos de calor, explicamos qué significan esos datos y compartimos consejos para prevenir incendios en el monte, en la ciudad y en casa. Conoce nuestra historia en <a href="antecedentes.html">Antecedentes</a>.
                     </p>
                 </div>
             </details>
@@ -213,58 +256,161 @@
                 <summary>¿Qué hago si veo un incendio?</summary>
                 <div class="faq-answer">
                     <p>
-                        Llama de inmediato al <strong>911</strong>. Si se trata de un incendio forestal,
-                        también puedes reportarlo a la CONAFOR al <strong>800 737 00 00</strong>
-                        <a href="referencias.html#ref-ochoa">(Ochoa, 2025)</a>.
+                        Llama de inmediato al <strong>911</strong>. Si se trata de un incendio forestal, también puedes reportarlo a la CONAFOR al <strong>800 737 00 00</strong> <a href="referencias.html#ref-ochoa">(Ochoa, 2025)</a>.
                     </p>
                     <p>
-                        Ten a la mano la ubicación lo más precisa posible, el tamaño aproximado del fuego y
-                        si hay personas o viviendas cerca. Aléjate de la zona y no intentes apagarlo si es grande.
-                        Entalpia es una herramienta de apoyo y no sustituye a los servicios de emergencia.
+                        Ten a la mano la ubicación lo más precisa posible, el tamaño aproximado del fuego y si hay personas o viviendas cerca. Aléjate de la zona y no intentes apagar un incendio grande o forestal. Si se prende tu ropa: no corras, tírate al suelo y rueda <a href="referencias.html#ref-consulado">(Consulado de México en Chicago, 2016)</a>.
+                    </p>
+                    <p>
+                        Entalpia es una herramienta de apoyo y <strong>no sustituye</strong> a los servicios de emergencia.
                     </p>
                 </div>
             </details>
 
-            <details class="faq-item" id="faq-grafica" data-categoria="datos">
-                <summary>¿Cómo leo la gráfica de datos?</summary>
+            <details class="faq-item" id="faq-calendario" data-categoria="datos">
+                <summary>¿Cómo leo el calendario de actividad de quema?</summary>
                 <div class="faq-answer">
                     <p>
-                        En la página de <a href="../index.html#datos">Inicio</a> encontrarás una gráfica de barras.
-                        Cada barra representa un periodo de tiempo y su altura indica cuántos focos de calor se
-                        detectaron en ese periodo. Pasa el cursor sobre una barra para ver el número exacto.
+                        Está al inicio de la <a href="../index.html#calendario">página principal</a>. Cada cuadrito es un día:
+                        <strong>mientras más amarillo, más fuego</strong> se detectó ese día. Los cuadritos con
+                        <strong>borde rojo</strong> son días inusuales: hubo mucho más fuego de lo normal para ese mes.
+                        Los rayados son días sin datos.
                     </p>
                     <p>
-                        Un foco de calor no siempre es un incendio: puede ser, por ejemplo, una quema agrícola.
-                        Por eso los datos se usan como indicador de riesgo.
+                        Arriba puedes elegir la <strong>región</strong> (o escribir tus propias coordenadas), el <strong>año</strong>
+                        y qué ver: <strong>Armonizado</strong> (los dos satélites combinados), <strong>Solo MODIS</strong> o
+                        <strong>Solo VIIRS</strong>. Pasa el cursor o toca un día para ver su detalle.
+                    </p>
+                    <p>
+                        La <strong>temporada crítica</strong> son los meses que, en el historial, han tenido más fuego. El historial
+                        cubre los últimos 2 años y se actualiza solo.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-armonizar" data-categoria="datos">
+                <summary>¿Por qué hay que armonizar MODIS y VIIRS?</summary>
+                <div class="faq-answer">
+                    <p>
+                        <strong>MODIS</strong> (satélites Terra y Aqua) vigila el fuego desde el año 2000 con "fotos" de cuadritos de
+                        ~1 km. <strong>VIIRS</strong> (satélites más nuevos) usa cuadritos de 375 m, así que un mismo incendio
+                        aparece como varios puntos y además ve fuegos más pequeños. Si solo se suman los puntos, parece que hay
+                        muchos más incendios de los que realmente hay.
+                    </p>
+                    <p>
+                        Para compararlos: (1) contamos áreas de ~1 km con fuego en lugar de puntos, (2) calculamos cuánto más
+                        cuenta VIIRS que MODIS en los días que los dos observaron y lo ajustamos a la misma escala, y
+                        (3) combinamos ambos en una sola serie. La gráfica "Antes y después de armonizar" muestra la diferencia
+                        <a href="referencias.html#ref-giglio">(Giglio et al., 2016)</a>
+                        <a href="referencias.html#ref-schroeder">(Schroeder et al., 2014)</a>.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-mapa" data-categoria="datos">
+                <summary>¿Cómo uso el mapa de la demo?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Pulsa <strong>Desplegar Demo</strong> en el menú. Se abre un mapa donde <strong>cada punto es un lugar en el que el satélite detectó calor</strong>.
+                    </p>
+                    <p>
+                        <strong>Verde:</strong> la NASA tiene confianza nominal o alta de que es fuego. <strong>Rojo:</strong> confianza baja (puede ser otra cosa caliente).
+                    </p>
+                    <p>
+                        Los <strong>círculos con número</strong> agrupan varios puntos cercanos: acércate con la rueda del mouse (o con dos dedos en el celular) o haz clic en ellos para separarlos. Al hacer clic en un punto verás su ubicación, temperatura y energía del fuego.
+                    </p>
+                    <p>
+                        Con el botón de <strong>capas</strong> (arriba a la derecha del mapa) puedes cambiar el fondo: oscuro, calles, satelital u OpenStreetMap. Si prefieres verlo en grande, usa <strong>Abrir en pestaña</strong>.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-numeros" data-categoria="datos">
+                <summary>¿Qué significan los números de "Lo que vemos desde el espacio"?</summary>
+                <div class="faq-answer">
+                    <p>
+                        <strong>Puntos de calor:</strong> cuántos lugares calientes detectó el satélite en los últimos 3 días.
+                    </p>
+                    <p>
+                        <strong>Señales confiables:</strong> de cada 100 puntos, cuántos son casi seguro fuego real según la NASA.
+                    </p>
+                    <p>
+                        <strong>Tamaño del fuego:</strong> cuánta energía suelta el fuego, medida en MW (megawatts). Mostramos la mediana: la mitad de los puntos suelta menos que eso, así que la mayoría son fuegos pequeños.
+                    </p>
+                    <p>
+                        <strong>Nuestro modelo acierta:</strong> entrenamos un programa (una regresión logística) para distinguir señales confiables de dudosas y lo probamos con puntos que nunca había visto. La cifra dice cuántas veces de cada 100 acertó.
+                    </p>
+                    <p>
+                        Puedes verlos en el <a href="../index.html#datos">Inicio</a>. Si te interesa el detalle técnico, abre "Para los curiosos" debajo de las cifras.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-margen" data-categoria="datos">
+                <summary>¿Qué es el "margen" que aparece debajo de las cifras?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Es como en las encuestas de las noticias: ningún cálculo es perfecto, así que damos un <strong>rango</strong>. Estamos 95% seguros de que el valor real está dentro de él.
+                    </p>
+                    <p>
+                        Por ejemplo, si dice "98 de 100" con margen entre 96.8% y 98.3%, el valor real casi seguro está entre esos dos números. Mientras más datos tenemos, más angosto es el margen. Técnicamente se llama <strong>intervalo de confianza del 95%</strong> y lo calculamos con la distribución normal.
                     </p>
                 </div>
             </details>
 
             <details class="faq-item" id="faq-datos" data-categoria="datos">
-                <summary>¿De dónde vienen los datos?</summary>
+                <summary>¿De dónde vienen los datos y cada cuándo se actualizan?</summary>
                 <div class="faq-answer">
                     <p>
-                        Usamos las detecciones de <strong>NASA FIRMS</strong> obtenidas por el sensor
-                        <strong>VIIRS</strong> del satélite NOAA-21. Cada detección es un punto donde el satélite
-                        registró una anomalía térmica (una zona más caliente de lo normal) en México y sus
-                        alrededores durante los últimos días.
+                        Usamos las detecciones de <strong>NASA FIRMS</strong>, que descargamos con su API (una conexión directa a su sistema) <a href="referencias.html#ref-firms-api">(NASA, s.f.)</a>. El <strong>mapa de la demo</strong> muestra los últimos 3 días del sensor <strong>VIIRS</strong> del satélite NOAA-21 (375 m). El <strong>calendario</strong> usa 2 años de historial de <strong>MODIS</strong> (Terra y Aqua, ~1 km) y <strong>VIIRS</strong> (NOAA-20, 375 m).
                     </p>
                     <p>
-                        Nuestro equipo de análisis de datos limpia esa información, la guarda en una base de datos
-                        y la clasifica según la confianza de la detección (nominal o alta, o baja) antes de
-                        mostrarla en el mapa de la demostración.
+                        Mientras nuestro servidor está encendido, <strong>descarga datos nuevos cada 3 horas</strong> y vuelve a calcular el mapa, el calendario y las cifras del Inicio. La zona que revisamos es México y sus alrededores, por eso algunos puntos pueden caer en el sur de Estados Unidos o en Centroamérica.
+                    </p>
+                    <p>
+                        Un punto de calor no siempre es un incendio: también puede ser una quema agrícola, de basura o una fuente industrial de calor.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-prevencion" data-categoria="prevencion">
+                <summary>¿Cómo puedo prevenir incendios?</summary>
+                <div class="faq-answer">
+                    <p>
+                        <strong>En el monte:</strong> no tires colillas ni cerillos, apaga por completo las fogatas con agua y tierra, no dejes vidrios ni botellas y no quemes basura.
+                    </p>
+                    <p>
+                        <strong>En casa y en la colonia:</strong> limpia la hierba seca de patios y lotes, no sobrecargues extensiones, mantén cortinas y muebles lejos de la estufa, revisa tus cilindros de gas y haz un plan de evacuación con tu familia.
+                    </p>
+                    <p>
+                        Encuentra todos los consejos con sus fuentes en la sección de <a href="../index.html#prevencion">prevención del Inicio</a>.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-encuesta" data-categoria="encuesta">
+                <summary>¿Cómo funciona la encuesta?</summary>
+                <div class="faq-answer">
+                    <p>
+                        Es una encuesta <strong>anónima</strong> de unos minutos sobre qué tan preparados estamos ante un incendio. Puedes contestarla desde el botón <strong>Responder la encuesta</strong> al final del Inicio.
+                    </p>
+                    <p>
+                        Las gráficas se actualizan solas: pueden tardar unos minutos en reflejar respuestas nuevas. Las barras <strong>rojas</strong> marcan respuestas que muestran un área de oportunidad (por ejemplo, no saber a quién llamar).
+                    </p>
+                    <p>
+                        Las respuestas escritas (la pregunta abierta) <strong>no se publican</strong> en la página; solo las usa el equipo para mejorar.
                     </p>
                 </div>
             </details>
 
             <details class="faq-item" id="faq-alertas" data-categoria="alertas">
-                <summary>¿Cómo funcionan las alertas?</summary>
+                <summary>¿Entalpia manda alertas?</summary>
                 <div class="faq-answer">
-                    <!-- TODO: ajustar según cómo se generen las alertas en la versión final -->
                     <p>
-                        Cuando los datos satelitales muestran actividad de calor inusual en una zona, Entalpia la
-                        señala como zona de riesgo. El objetivo es avisar lo antes posible para que las personas
-                        y autoridades puedan reaccionar a tiempo.
+                        Por ahora, Entalpia muestra en el mapa las detecciones más recientes, que se actualizan cada 3 horas. Todavía no enviamos avisos automáticos.
+                    </p>
+                    <p>
+                        <strong>Próximamente</strong> tendremos un chatbot de WhatsApp para recibir avisos y resolver dudas sobre incendios desde tu celular.
                     </p>
                 </div>
             </details>
@@ -273,19 +419,34 @@
                 <summary>¿Cómo juego?</summary>
                 <div class="faq-answer">
                     <p>
-                        Entra a la sección <a href="juego.html">Jugar!</a> desde el menú superior. El juego está
-                        pensado para aprender sobre la prevención de incendios de forma divertida.
+                        Nuestro juego está en desarrollo. Está pensado para aprender sobre la prevención de incendios de forma divertida y muy pronto estará disponible en la sección <a href="juego.html">Jugar!</a>.
                     </p>
                 </div>
             </details>
 
             <details class="faq-item" id="faq-sesion" data-categoria="cuenta">
-                <summary>¿Cómo inicio sesión?</summary>
+                <summary>¿Cómo creo una cuenta e inicio sesión?</summary>
                 <div class="faq-answer">
                     <p>
-                        Pulsa <strong>Iniciar sesión</strong> en la parte superior de la página. Si todavía no tienes
-                        cuenta, elige <strong>Registrarse</strong> en la misma ventana. Con la sesión iniciada puedes
-                        actualizar los datos del mapa desde <strong>Desplegar Demo</strong>.
+                        Pulsa <strong>Iniciar sesión</strong> en la parte superior de la página. Si todavía no tienes cuenta, elige <strong>Registrarse</strong> y escribe un usuario, tu correo y una contraseña de al menos 6 caracteres.
+                    </p>
+                    <p>
+                        Con la sesión iniciada puedes actualizar los datos del mapa en cualquier momento desde <strong>Desplegar Demo → Actualizar datos</strong>.
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item" id="faq-privacidad" data-categoria="cuenta">
+                <summary>¿Qué hacen con mis datos?</summary>
+                <div class="faq-answer">
+                    <p>
+                        <strong>Cuenta:</strong> guardamos tu usuario, tu correo y tu contraseña <strong>cifrada</strong> (nunca guardamos la contraseña tal cual). Usaremos tu correo solo para enviarte avisos de Entalpia.
+                    </p>
+                    <p>
+                        <strong>Buzón:</strong> los mensajes del pie de página llegan al correo del equipo a través del servicio Formspree.
+                    </p>
+                    <p>
+                        <strong>Encuesta:</strong> es anónima y en la página solo mostramos resultados en conjunto (porcentajes), nunca respuestas individuales.
                     </p>
                 </div>
             </details>
@@ -294,9 +455,7 @@
                 <summary>Algo en la página no funciona, ¿qué hago?</summary>
                 <div class="faq-answer">
                     <p>
-                        Primero intenta recargar la página o abrirla en otro navegador. Si el problema continúa,
-                        escríbenos desde la página de <a href="contacto.html">Contacto</a> y cuéntanos qué
-                        estabas haciendo, en qué dispositivo y qué navegador usas.
+                        Primero intenta recargar la página (Ctrl + F5) o abrirla en otro navegador. Si el problema continúa, escríbenos desde el <strong>Buzón</strong> al final de cualquier página o desde <a href="contacto.html">Contacto</a>, y cuéntanos qué estabas haciendo, en qué dispositivo y qué navegador usas.
                     </p>
                 </div>
             </details>
